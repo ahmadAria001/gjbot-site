@@ -7,7 +7,7 @@ declare global {
 			errorId: string;
 		}
 		interface Locals {
-			isInit: boolean | false;
+			isInit: boolean;
 			user: {
 				username: string | null;
 				email: string | null;

@@ -4,15 +4,14 @@
 	import icon from '$lib/assets/img/Desain_tanpa_judul_(1)-rgm-CYQcv-transformed.png';
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
-	import { afterNavigate, invalidateAll } from '$app/navigation';
+	import { afterNavigate, goto, invalidateAll } from '$app/navigation';
+	import { fly } from 'svelte/transition';
 
 	export let data;
 
-	afterNavigate(({ from }) => {
+	afterNavigate(({ from, to }) => {
 		if (from?.url.pathname.startsWith('/auth/discord')) {
-			console.log('Triggered');
 			invalidateAll();
-
 			location.reload();
 		}
 	});
@@ -29,7 +28,7 @@
 	}
 </script>
 
-<div class="layout-container">
+<div class="layout-container dark:dark-scroll">
 	{#if !$page.url.pathname.startsWith('/auth/discord') && browser}
 		{#if data.username != null}
 			<Navbar gjIcn={img} username={uName} isAuthorized={true} />
@@ -37,7 +36,13 @@
 			<Navbar gjIcn={icon} username={uName} />
 		{/if}
 	{/if}
-	<div class="main-container mb-5 mt-28 max-md:mt-20 mx-5">
-		<slot class="text-white" />
-	</div>
+	{#key data.URL}
+		<div
+			class="main-container mb-5 mt-28 max-md:mt-20 mx-5 max-md:mx-2 dark:dark-scroll"
+			in:fly={{ x: -200, duration: 300, delay: 300 }}
+			out:fly={{ x: 200, duration: 300 }}
+		>
+			<slot class="text-white dark:dark-scroll" />
+		</div>
+	{/key}
 </div>

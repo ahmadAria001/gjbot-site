@@ -1,4 +1,4 @@
-import { dencrypt, encrypt } from '$lib/functions/encoder.js';
+import { encrypt } from '$lib/functions/encoder.js';
 import { createSession } from '$lib/server/models/session.models.js';
 import { json } from '@sveltejs/kit';
 
@@ -17,7 +17,7 @@ export const POST = async ({ request, cookies, locals }) => {
 	let sessionId = sessionData?.session_id;
 
 	cookies.set('session', sessionId!, {
-		secure: true,
+		secure: false,
 		expires: new Date(body.expire),
 		path: '/',
 		httpOnly: true,

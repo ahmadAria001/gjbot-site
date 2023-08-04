@@ -1,10 +1,49 @@
 <script lang="ts">
+	import { afterNavigate, goto, invalidateAll } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { PUBLIC_DC_SIGNIN_LINK } from '$env/static/public';
 	import gjIcon from '$lib/assets/img/Desain_tanpa_judul_(1)-rgm-CYQcv-transformed.png';
 	import postcss from 'postcss';
+	import { onMount } from 'svelte';
+
+	export let form;
+
+	afterNavigate(({ from, to }) => {
+		if (to?.url.search.startsWith('?/signout') && form?.signedOut == true) {
+			invalidateAll();
+			location.reload();
+			form.signedOut = false;
+		}
+	});
+
+	console.log(form);
+
+	onMount(() => {
+		let modal = document.getElementById('modal-log');
+
+		if (form?.signedIn) {
+			history.replaceState('', '', '/');
+			goto('/');
+			location.reload();
+		}
+
+		if (form?.message != null) {
+			// @ts-ignore
+			modal?.showModal();
+		}
+	});
 </script>
 
-<div class="w-full p-2 flex justify-center align-middle">
+<dialog id="modal-log" class="modal border-0 border-transparent">
+	<form method="dialog" class="modal-box border-transparent">
+		<h3 class="font-bold text-lg">Error</h3>
+		<p class="py-4">{form?.message != null ? form?.message : ''}</p>
+	</form>
+	<form method="dialog" class="modal-backdrop border-transparent">
+		<button>close</button>
+	</form>
+</dialog>
+<div class="w-full p-2 flex justify-center align-middle dark:dark-scroll">
 	<div
 		class="w-4/12 h-fit max-md:w-full max-lg:w-2/3 bg-white dark:bg-slate-800 dark:text-white p-5 text-center shadow-md shadow-gray-500 dark:shadow-2xl dark:shadow-emerald-500 drop-shadow-2xl rounded-md dark:border-emerald-500 border-solid border-2"
 	>
@@ -16,6 +55,8 @@
 			<h1 class="col-span-full text-md font-[Quicksand]">Hey, Please enter Your Details</h1>
 
 			<form
+				method="post"
+				action="signin?/signin"
 				class="grid grid-cols-2 grid-flow-row col-span-full max-md:px-2 max-lg:px-2 px-16 mt-10"
 			>
 				<label class="relative col-span-full row-span-2 gap-0">
@@ -66,7 +107,6 @@
 				</div>
 
 				<button
-					type="button"
 					class="col-span-full mt-5 mb-2 text-white transition-all duration-150 bg-blue-600 dark:hover:bg-emerald-500 dark:hover:text-white dark:bg-transparent dark:border-solid dark:border-2 dark:text-emerald-400 dark:border-emerald-400 dark:hover:shadow-emerald-400 dark:shadow-lg dark:drop-shadow-md h-10 rounded-md font-[Roboto] font-extrabold"
 				>
 					Sing In

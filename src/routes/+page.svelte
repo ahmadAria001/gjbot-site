@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { afterNavigate, goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { PUBLIC_TITLE } from '$env/static/public';
-	import { onMount } from 'svelte';
 
 	export let data;
 

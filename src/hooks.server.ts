@@ -1,21 +1,22 @@
 import type { Handle } from '@sveltejs/kit';
-import { client, testConnection } from '$lib/server/database/db';
 import { dencrypt } from '$lib/functions/encoder';
-import { page } from '$app/stores';
+import { compareHash, toHash } from '$lib/server/functions/hash';
+
+const ALLOWED_PATH = ['/signin', '/', '/auth/discord'];
 
 export const handle: Handle = async ({ event, resolve }) => {
-	if (!event.locals.isInit) {
-		let testCon = await testConnection();
+	if (event.locals.isInit == undefined) event.locals.isInit = false;
+
+	if (!event.locals.isInit || event.locals.isInit == undefined) {
 		event.locals.user = {
 			avatar: null,
 			email: null,
 			id: null,
 			username: null
 		};
-		event.locals.isInit = testCon.isSucces == true;
-	}
 
-	console.log(`IsInit: ${event.locals.isInit}`);
+		event.locals.isInit = true;
+	}
 
 	if (event.cookies.getAll().length > 0 && event.locals.user.email == null) {
 		let cookiesContent = dencrypt(event.cookies.get('session')!);
@@ -29,6 +30,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 			id: content.id,
 			username: content.username
 		};
+	}
+
+	if (event.cookies.getAll().length < 1 && !ALLOWED_PATH.includes(event.url.pathname)) {
+		if (
+			(event.locals.user == undefined && !ALLOWED_PATH.includes(event.url.pathname)) ||
+			(event.locals.user.id == null && !ALLOWED_PATH.includes(event.url.pathname))
+		) {
+			// return Response.redirect(event.url.host + '/signin');
+			return new Response('Redirect', { status: 303, headers: { Location: '/signin' } });
+		}
 	}
 
 	return resolve(event);

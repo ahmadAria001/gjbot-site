@@ -7,6 +7,69 @@ interface sessionBuilder {
 	is_destroyed: boolean | false;
 }
 
+export const sessionDestroy = async (payload: any) => {
+	let { user, session } = payload;
+
+	let result = {
+		err: true || false,
+		errMessage: null || '',
+		isSuccess: true || false
+	};
+
+	result.isSuccess = false;
+
+	const con = client;
+
+	await con.connect();
+
+	let isErr = false;
+	let errMsg = '' || null;
+
+	for (let i = 0; i < 5; i++) {
+		try {
+			let collections = con.db('discordBot').collection('sessions');
+
+			let sessionData = await collections.findOne({ user: user, session_id: session });
+
+			let updateLog = await collections.updateOne(
+				{ user: user, $and: [{ session_id: session }] },
+				{
+					$set: {
+						is_destroyed: true
+					}
+				}
+			);
+
+			if (updateLog.modifiedCount > 0) result.isSuccess = true;
+
+			break;
+		} catch (error) {
+			if (i == 5) {
+				isErr = true;
+				errMsg = (error as any).message;
+				break;
+			}
+
+			if (new String((error as any).code || null).includes('ECONN')) {
+				console.error(error);
+				setTimeout(() => {
+					console.error('Timed Out by Error');
+				}, 5000);
+
+				continue;
+			}
+
+			if (!new String((error as any).code || null).includes('ECONN')) {
+				isErr = true;
+				errMsg = (error as any).message;
+				break;
+			}
+		}
+	}
+
+	return result;
+};
+
 export const createSession = async (payload: any) => {
 	let result = {
 		err: true || false,
@@ -28,7 +91,7 @@ export const createSession = async (payload: any) => {
 			let collections = con.db('discordBot').collection('sessions');
 
 			let rawSession = collections
-				.find({ user: id })
+				.find({ user: id, is_destroyed: false })
 				.sort({
 					expired_at: -1
 				})

@@ -40,7 +40,10 @@
 							{username}
 						</h5>
 						<li>
-							<a class="hover:text-white text-white group/profilelink transition-all duration-200 ease-in" href="">
+							<a
+								class="hover:text-white text-white group/profilelink transition-all duration-200 ease-in"
+								href="/dashboard"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -49,14 +52,21 @@
 										d="M4 13h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1zm-1 7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v4zm10 0a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v7zm1-10h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1z"
 									/></svg
 								>
-								<span class="pb-1 relative before:content-[''] before:absolute before:block before:w-12 before:h-[2px]
+								<span
+									class="pb-1 relative before:content-[''] before:absolute before:block before:w-[4.7rem] before:h-[2px]
                                 before:bottom-0 before:left-0 before:bg-white
                                 before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
-                                before:transition before:ease-in-out before:duration-300"> Dashboard </span>
+                                before:transition before:ease-in-out before:duration-300"
+								>
+									Dashboard
+								</span>
 							</a>
 						</li>
 						<li>
-							<a class="hover:text-white text-white group/profilelink transition-all duration-200 ease-in" href="">
+							<a
+								class="hover:text-white text-white group/profilelink transition-all duration-200 ease-in"
+								href=""
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -65,14 +75,21 @@
 										d="M20 12a2 2 0 0 0-.703.133l-2.398-1.963c.059-.214.101-.436.101-.67C17 8.114 15.886 7 14.5 7S12 8.114 12 9.5c0 .396.1.765.262 1.097l-2.909 3.438A2.06 2.06 0 0 0 9 14c-.179 0-.348.03-.512.074l-2.563-2.563C5.97 11.348 6 11.179 6 11c0-1.108-.892-2-2-2s-2 .892-2 2 .892 2 2 2c.179 0 .348-.03.512-.074l2.563 2.563A1.906 1.906 0 0 0 7 16c0 1.108.892 2 2 2s2-.892 2-2c0-.237-.048-.46-.123-.671l2.913-3.442c.227.066.462.113.71.113a2.48 2.48 0 0 0 1.133-.281l2.399 1.963A2.077 2.077 0 0 0 18 14c0 1.108.892 2 2 2s2-.892 2-2-.892-2-2-2z"
 									/></svg
 								>
-								<span class="pb-1 relative before:content-[''] before:absolute before:block before:w-12 before:h-[2px]
+								<span
+									class="pb-1 relative before:content-[''] before:absolute before:block before:w-16 before:h-[2px]
                                 before:bottom-0 before:left-0 before:bg-white
                                 before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
-                                before:transition before:ease-in-out before:duration-300"> Analystic </span>
+                                before:transition before:ease-in-out before:duration-300"
+								>
+									Analystic
+								</span>
 							</a>
 						</li>
 						<li>
-							<a class="hover:text-white text-white group/profilelink transition-all duration-200 ease-in" href="">
+							<a
+								class="hover:text-white text-white group/profilelink transition-all duration-200 ease-in"
+								href="/conversations"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -83,10 +100,14 @@
 										d="M20 2H8c-1.103 0-2 .897-2 2h12c1.103 0 2 .897 2 2v8c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z"
 									/></svg
 								>
-								<span class="pb-1 relative before:content-[''] before:absolute before:block before:w-12 before:h-[2px]
+								<span
+									class="pb-1 relative before:content-[''] before:absolute before:block before:w-24 before:h-[2px]
                                 before:bottom-0 before:left-0 before:bg-white
                                 before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
-                                before:transition before:ease-in-out before:duration-300"> Conversations </span>
+                                before:transition before:ease-in-out before:duration-300"
+								>
+									Conversations
+								</span>
 							</a>
 						</li>
 
@@ -137,24 +158,28 @@
 							</a>
 						</li>
 						<li>
-							<a href="" class="hover:text-white group/signout transition-all duration-200 ease-in">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									class="w-6 group-hover/signout:fill-white fill-white transition-all duration-200 ease-in"
-									><path
-										d="M12 21c4.411 0 8-3.589 8-8 0-3.35-2.072-6.221-5-7.411v2.223A6 6 0 0 1 18 13c0 3.309-2.691 6-6 6s-6-2.691-6-6a5.999 5.999 0 0 1 3-5.188V5.589C6.072 6.779 4 9.65 4 13c0 4.411 3.589 8 8 8z"
-									/><path d="M11 2h2v10h-2z" /></svg
+							<form action="signin?/signout" method="post" class="w-full">
+								<button
+									class="hover:text-white group/signout transition-all duration-200 ease-in flex w-full"
 								>
-								<span
-									class="pb-1 relative before:content-[''] before:absolute before:block before:w-16 before:h-[2px]
-                                before:bottom-0 before:left-0 before:bg-white
-                                before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
-                                before:transition before:ease-in-out before:duration-300"
-								>
-									Sign Out
-								</span>
-							</a>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										class="w-6 group-hover/signout:fill-white fill-white transition-all duration-200 ease-in"
+										><path
+											d="M12 21c4.411 0 8-3.589 8-8 0-3.35-2.072-6.221-5-7.411v2.223A6 6 0 0 1 18 13c0 3.309-2.691 6-6 6s-6-2.691-6-6a5.999 5.999 0 0 1 3-5.188V5.589C6.072 6.779 4 9.65 4 13c0 4.411 3.589 8 8 8z"
+										/><path d="M11 2h2v10h-2z" /></svg
+									>
+									<span
+										class="ml-2 pb-1 relative before:content-[''] before:absolute before:block before:w-16 before:h-[2px]
+									before:bottom-0 before:left-0 before:bg-white
+									before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
+									before:transition before:ease-in-out before:duration-300 group-hover/signout:text-white group-hover/signout:after:text-white group-hover/signout:before:text-white"
+									>
+										Sign Out
+									</span>
+								</button>
+							</form>
 						</li>
 					</ul>
 				{:else}

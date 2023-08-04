@@ -5,6 +5,7 @@ interface userData {
 	isErr: boolean | false;
 	errMsg: string | null;
 	content: string | null;
+	isNew: boolean | false;
 }
 
 export const POST = async ({ request }) => {
@@ -13,7 +14,8 @@ export const POST = async ({ request }) => {
 	let result: userData = {
 		isErr: false,
 		errMsg: null,
-		content: null
+		content: null,
+		isNew: false
 	};
 
 	let response = await auth(params);
@@ -26,6 +28,7 @@ export const POST = async ({ request }) => {
 	}
 
 	result.content = JSON.stringify(response.user);
+	result.isNew = response.isNew;
 
 	return json(result);
 };
