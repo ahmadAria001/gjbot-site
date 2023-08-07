@@ -1,22 +1,17 @@
+import type { ObjectId } from 'mongodb';
 import { client } from '../database/db';
 import { toHash } from '../functions/hash';
-import type { responseData } from './auth.models';
 
 interface payloadPasswordChange {
-	id: string;
-	email: string;
+	id: ObjectId;
 	password: string;
 }
 
 export const changePassword = async (payload: payloadPasswordChange) => {
-	let { email, id, password } = payload;
+	let { id, password } = payload;
 
-	let result: responseData = {
-		err: false,
-		errMessage: null,
-		isNew: false,
-		user: { avatar: null, email: null, expire: null, id: null, username: null }
-	};
+	const errMes = 'Current password are incorrect';
+	let result = { status: 200, message: errMes || null };
 
 	const con = client;
 	await con.connect();
@@ -25,28 +20,17 @@ export const changePassword = async (payload: payloadPasswordChange) => {
 		try {
 			let collections = con.db('discordBot').collection('website');
 			let user = await collections.findOne({
-				'accounts.discord.email': email,
-				'accounts.discord.userId': id
+				_id: id
 			});
 
 			if (user == null) {
-				result = {
-					err: true,
-					errMessage: 'Cannot find account',
-					isNew: false,
-					user: {
-						id: null,
-						username: null,
-						email: null,
-						avatar: null,
-						expire: 0
-					}
-				};
+				result.status = 400;
+				result.message = 'Cannot find account';
 				break;
 			}
 
 			let updated = await collections.updateOne(
-				{ 'accounts.discord.email': email, 'accounts.discord.userId': id },
+				{ _id: id },
 				{
 					$set: {
 						password: (await toHash(password)).toString()
@@ -55,33 +39,12 @@ export const changePassword = async (payload: payloadPasswordChange) => {
 			);
 
 			if (updated.modifiedCount == 1) {
-				result = {
-					err: false,
-					errMessage: null,
-					isNew: true,
-					user: {
-						id: user.accounts.discord.id,
-						username: user.accounts.discord.userName,
-						email: user.accounts.discord.email,
-						avatar: user.accounts.discord.avatar,
-						expire: 0
-					}
-				};
+				result.message = null!;
 			}
 		} catch (error) {
 			if (i == 5) {
-				result = {
-					err: true,
-					errMessage: (error as any).message,
-					isNew: false,
-					user: {
-						id: null,
-						username: null,
-						email: null,
-						avatar: null,
-						expire: 0
-					}
-				};
+				result.status = 400;
+				result.message = (error as any).message;
 				break;
 			}
 
@@ -95,18 +58,8 @@ export const changePassword = async (payload: payloadPasswordChange) => {
 			}
 
 			if (!new String((error as any).code || null).includes('ECONN')) {
-				result = {
-					err: true,
-					errMessage: (error as any).message,
-					isNew: false,
-					user: {
-						id: null,
-						username: null,
-						email: null,
-						avatar: null,
-						expire: 0
-					}
-				};
+				result.status = 400;
+				result.message = (error as any).message;
 				break;
 			}
 		}

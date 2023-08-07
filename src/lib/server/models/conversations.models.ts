@@ -39,8 +39,17 @@ export const getTalk = async (id: string | null) => {
 							'conversations.created_at': 1
 						}
 					},
-					{ $group: { _id: '$userId', conversations: { $push: '$conversations' } } },
-					{ $project: { conversations: { $slice: ['$conversations', -50] } } }
+					{
+						$group: {
+							_id: '$userId',
+							conversations: { $push: '$conversations' }
+						}
+					},
+					{
+						$project: {
+							conversations: { $slice: ['$conversations', -20] }
+						}
+					}
 				])
 				.toArray();
 
@@ -228,18 +237,23 @@ export const createConversation = async (
 
 	if (isExceed.content != null) return isExceed;
 
+	let response: any = '';
+
 	if (openAi == undefined) {
 		getModel();
 	}
 
-	getTalkLimit;
-	let response = await openAi.createChatCompletion({
-		model: 'gpt-3.5-turbo-16k',
-		messages: content,
-		temperature: 1.2,
-		stream: true,
-		max_tokens: 1000
-	});
+	try {
+		response = await openAi.createChatCompletion({
+			model: 'gpt-3.5-turbo-16k',
+			messages: content,
+			temperature: 1.2,
+			stream: true,
+			max_tokens: 1000
+		});
+	} catch (error) {
+		throw error;
+	}
 
 	let tokenUsed;
 	let extractedStream = extractStream(response.data.toString());
@@ -278,7 +292,6 @@ export const updateInteractions = async (
 
 	if (content.hasOwnProperty('resp')) {
 		tokenAmountt = content.resp.length;
-		console.log(content.resp.length);
 
 		for (let i = 0; i < content.resp.length - 1; i++) {
 			combinedResponse += content.resp[i].choices[0].delta.content;

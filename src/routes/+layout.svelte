@@ -24,7 +24,7 @@
 
 	if (data.username != null) {
 		uName = data.username;
-		img = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png?size=4096`;
+		img = `${data.id}/${data.avatar}`;
 	}
 </script>
 
@@ -38,7 +38,7 @@
 	{/if}
 	{#key data.URL}
 		<div
-			class="main-container mb-5 mt-28 max-md:mt-20 mx-5 max-md:mx-2 dark:dark-scroll"
+			class="main-container mb-5 mt-24 max-md:mt-20 mx-5 max-md:mx-2 dark:dark-scroll"
 			in:fly={{ x: -200, duration: 300, delay: 300 }}
 			out:fly={{ x: 200, duration: 300 }}
 		>

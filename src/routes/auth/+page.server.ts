@@ -3,6 +3,8 @@ import { changePassword } from '$lib/server/models/user.models.js';
 import { redirect } from '@sveltejs/kit';
 
 export const load = async ({ cookies, locals }) => {
+	if (locals.user.id == null) throw redirect(303, '/signin');
+
 	if (cookies.getAll().length < 1) {
 		throw redirect(302, '/signin');
 	}

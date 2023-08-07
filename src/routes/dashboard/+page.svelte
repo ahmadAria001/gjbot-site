@@ -229,7 +229,7 @@
 
 <svelte:window bind:innerWidth={screenSize} />
 
-<div class="w-full px-10 max-md:px-0 py-2 flex justify-center align-middle dark:dark-scroll">
+<div class="w-full px-10 max-md:px-0 py-0 flex justify-center align-middle dark:dark-scroll">
 	<div class="grid grid-flow-row grid-cols-4 w-full gap-5 dark:dark-scroll">
 		{#if !$page.data}
 			<span class="loading loading-spinner loading-lg" />
@@ -268,6 +268,7 @@
 					<div
 						class="pr-[0.55rem] transition-all duration-150 border-l-2 max-md:border-l-0 max-md:mt-5 border-white border-solid ml-5 max-md:ml-0 pl-5 w-3/4 max-md:w-full max-h-32 max-md:max-h-52 max-md:h-52 overflow-hidden hover:overflow-auto max-md:overflow-auto max-md:border-t-2 max-md:pt-2 justify-center dark:dark-scroll"
 					>
+						<span class="mb-5">Based on Last 20 Conversation </span>
 						{#if data.historyToken != null}
 							{#each data.historyToken as { day, token }, idx}
 								<p class="flex align-middle justify-between w-full max-md:break-words gap-10">

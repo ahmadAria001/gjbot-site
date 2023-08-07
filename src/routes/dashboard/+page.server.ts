@@ -1,6 +1,9 @@
 import { timeSince } from '$lib/functions/dateFormat.js';
+import { redirect } from '@sveltejs/kit';
 
 export const load = async ({ locals, fetch }) => {
+	if (locals.user.id == null) throw redirect(303, '/signin');
+
 	let userId = locals.user.id;
 
 	let responseCurrentToken;
@@ -94,8 +97,6 @@ const lastToken = async (params: any) => {
 				});
 		}
 	});
-
-	console.log(result);
 
 	result.map((value) => {
 		value.day = timeSince(new Date(value.day).getTime());

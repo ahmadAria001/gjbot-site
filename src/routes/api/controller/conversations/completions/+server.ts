@@ -5,7 +5,14 @@ import {
 } from '$lib/server/models/conversations.models.js';
 import { json } from '@sveltejs/kit';
 
-export const POST = async ({ request, locals, fetch }) => {
+export const POST = async ({ request, locals, url }) => {
+	if (!['localhost', '192.168.0.122'].includes(url.hostname))
+		return json({ promptData: null, isErr: true, message: 'Forbidden' });
+
+	if (locals.user.id == null) {
+		return json({ promptData: null, isErr: true, message: 'Unauthorized' });
+	}
+
 	const formData = await request.json();
 	const prompt = formData.prompt;
 

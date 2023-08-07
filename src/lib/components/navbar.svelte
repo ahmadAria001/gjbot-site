@@ -27,7 +27,11 @@
 				{#if isAuthorized}
 					<button class="btn btn-ghost btn-circle avatar group/avatar">
 						<div class="w-10 rounded-full">
-							<img src={gjIcn} alt="User-Avatar" class="z-40 rounded-full absolute" />
+							<img
+								src="https://cdn.discordapp.com/avatars/{gjIcn}.png?size=4096"
+								alt="User-Avatar"
+								class="z-40 rounded-full absolute"
+							/>
 							<div
 								class="bg-white transition-all duration-300 origin-bottom rounded-full w-[115%] scale-0 group-hover/avatar:scale-100 group-focus-within/avatar:scale-100 h-[115%] absolute top-0 left-0 z-0"
 							/>
@@ -114,7 +118,7 @@
 						<li class="mt-2">
 							<a
 								class="hover:text-white text-white group/profilelink transition-all duration-200 ease-in"
-								href=""
+								href="/me"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -130,30 +134,7 @@
                                 before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
                                 before:transition before:ease-in-out before:duration-300"
 								>
-									Profile
-								</span>
-							</a>
-						</li>
-						<li>
-							<a
-								href=""
-								class="text-white hover:text-white group/setting transition-all duration-200 ease-in"
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									class="w-6 fill-white transition-all duration-200 ease-in"
-									><path
-										d="m2.344 15.271 2 3.46a1 1 0 0 0 1.366.365l1.396-.806c.58.457 1.221.832 1.895 1.112V21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.598a8.094 8.094 0 0 0 1.895-1.112l1.396.806c.477.275 1.091.11 1.366-.365l2-3.46a1.004 1.004 0 0 0-.365-1.366l-1.372-.793a7.683 7.683 0 0 0-.002-2.224l1.372-.793c.476-.275.641-.89.365-1.366l-2-3.46a1 1 0 0 0-1.366-.365l-1.396.806A8.034 8.034 0 0 0 15 4.598V3a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v1.598A8.094 8.094 0 0 0 7.105 5.71L5.71 4.904a.999.999 0 0 0-1.366.365l-2 3.46a1.004 1.004 0 0 0 .365 1.366l1.372.793a7.683 7.683 0 0 0 0 2.224l-1.372.793c-.476.275-.641.89-.365 1.366zM12 8c2.206 0 4 1.794 4 4s-1.794 4-4 4-4-1.794-4-4 1.794-4 4-4z"
-									/></svg
-								>
-								<span
-									class="pb-1 relative before:content-[''] before:absolute before:block before:w-14 before:h-[2px]
-                                before:bottom-0 before:left-0 before:bg-white
-                                before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
-                                before:transition before:ease-in-out before:duration-300"
-								>
-									Settings
+									Account Settings
 								</span>
 							</a>
 						</li>

@@ -10,10 +10,9 @@ export const formatCode = (
 			text.split('```')[0] === '' &&
 			text.split('```')[2] === ''
 		) {
-			let formattedContent = `<div class="mockup-code my-2 text-left" in:fly={{ y: -200, duration: 300, delay: 300 }} out:fly={{ y: 200, duration: 300 }}><pre><code>${text.replaceAll(
-				'```',
-				''
-			)}</code></pre></div>`;
+			let formattedContent = `<div class="mockup-code my-2 text-left rounded-lg" in:fly={{ y: -200, duration: 300, delay: 300 }} out:fly={{ y: 200, duration: 300 }}><pre><code>${text
+				.toString()
+				.replaceAll('```', '')}</code></pre></div>`;
 
 			return { content: [formattedContent], instance: user, created_at: created_at };
 		}
@@ -31,9 +30,9 @@ export const formatCode = (
 						let containEnter = containsHtml.split(/\r?\n|\r|\n/g);
 						let counter = 1;
 
-						let formattedContent = `<div class="mockup-code my-2 text-left pr-1 w-full dark:dark-scroll text-slate-600 shadow-md shadow-slate-500 dark:shadow-none drop-shadow-md bg-[#f4f4f4] dark:bg-slate-800 dark:text-primary-content" in:fly={{ y: -200, duration: 300, delay: 300 }} out:fly={{ y: 200, duration: 300 }}>${containEnter
+						let formattedContent = `<div class="mockup-code my-2 text-left pr-1 w-full dark:dark-scroll text-slate-600 shadow-md shadow-slate-500 dark:shadow-none drop-shadow-md bg-[#f4f4f4] dark:bg-slate-800 dark:text-primary-content rounded-lg" in:fly={{ y: -200, duration: 300, delay: 300 }} out:fly={{ y: 200, duration: 300 }}>${containEnter
 							.map((val) => {
-								return `<pre data-prefix="${counter++}"><code>${val}</code></pre>`;
+								return `<pre data-prefix="${counter++}"><code>${val.toString()}</code></pre>`;
 							})
 							.join(' ')}</div>`;
 
@@ -42,15 +41,16 @@ export const formatCode = (
 						let containsHtml = codedText[i];
 						let containEnter = containsHtml.split(/\r?\n|\r|\n/g);
 
-						let formattedContent = `<div class="mockup-code my-2 text-left pr-1 w-full dark:dark-scroll text-slate-600 shadow-md shadow-slate-500 dark:shadow-none drop-shadow-md bg-[#f4f4f4] dark:bg-slate-800  dark:text-primary-content" in:fly={{ y: -200, duration: 300, delay: 300 }} out:fly={{ y: 200, duration: 300 }}>
+						let formattedContent = `<div class="mockup-code my-2 text-left pr-1 w-full dark:dark-scroll text-slate-600 shadow-md shadow-slate-500 dark:shadow-none drop-shadow-md bg-[#f4f4f4] dark:bg-slate-800  dark:text-primary-content rounded-lg" in:fly={{ y: -200, duration: 300, delay: 300 }} out:fly={{ y: 200, duration: 300 }}>
                     ${containEnter
 											.map((val, idx) => {
 												return `<pre data-prefix="${
 													codedText[i].includes('shell') ? (idx == 0 ? '$' : '&gt') : idx++
 												}"><code>${
-													val.includes('shell') || val.includes('cli') || val.includes('bash')
-														? ''
-														: val
+													// val.includes('shell') || val.includes('cli') || val.includes('bash')
+													// 	? ''
+													// 	: val.toString()
+													val.toString()
 												}</code></pre>`;
 											})
 											.join(' ')}
@@ -74,7 +74,8 @@ export const formatCode = (
 						splitLine[i].includes(']') &&
 						splitLine[i].includes('(') &&
 						splitLine[i].includes(')') &&
-						splitLine[i].includes('/')
+						splitLine[i].includes('/') &&
+						!splitLine[i].includes('{')
 					) {
 						title = splitLine[i].substring(
 							splitLine[i].indexOf('['),
@@ -92,10 +93,15 @@ export const formatCode = (
 							user == 'user' ? 'text-[#ffe311]' : 'text-blue-600'
 						}">Link: ${titleReplaced}</a></strong/>`;
 					}
+					let containEnter;
 
-					let containEnter = containsHtml
-						.replaceAll(/\r?\n|\r|\n/g, '<br/>')
-						.replace(title + targetLink, href);
+					if (href != '') {
+						containEnter = containsHtml
+							.replaceAll(/\r?\n|\r|\n/g, '<br/>')
+							.replace(title + targetLink, href);
+					} else {
+						containEnter = containsHtml.replaceAll(/\r?\n|\r|\n/g, '<br/>');
+					}
 
 					let bolded = containEnter;
 
@@ -152,10 +158,13 @@ export const formatCode = (
 						user == 'user' ? 'text-[#ffe311]' : 'text-blue-600'
 					}">${titleReplaced}</a>`;
 
-					if (title != '' && targetLink != '') splitLine[i].replace(title + targetLink, href);
+					if (title != '' && targetLink != '' && href != '')
+						splitLine[i].replace(title + targetLink, href);
 
 					let targetIdx = splitted.findIndex((val) => val.indexOf(title + targetLink) !== -1);
-					splitLine[targetIdx] = splitted[targetIdx].replace(title + targetLink, href);
+
+					if (href != '')
+						splitLine[targetIdx] = splitted[targetIdx].replace(title + targetLink, href);
 				}
 			}
 
@@ -212,7 +221,8 @@ export const formatCode = (
 						splitLine[i].includes(']') &&
 						splitLine[i].includes('(') &&
 						splitLine[i].includes(')') &&
-						splitLine[i].includes('/')
+						splitLine[i].includes('/') &&
+						!splitLine[i].includes('{')
 					) {
 						title = splitLine[i].substring(
 							splitLine[i].indexOf('['),
@@ -230,9 +240,10 @@ export const formatCode = (
 							user == 'user' ? 'text-[#ffe311]' : 'text-blue-600'
 						}">Link: ${titleReplaced}</a></strong/>`;
 
-						if (title != '' && targetLink != '') splitLine[i].replace(title + targetLink, href);
+						if (title != '' && targetLink != '' && href != '')
+							splitLine[i].replace(title + targetLink, href);
 
-						containEnter = containEnter.replace(title + targetLink, href);
+						if (href != '') containEnter = containEnter.replace(title + targetLink, href);
 					}
 				}
 			}

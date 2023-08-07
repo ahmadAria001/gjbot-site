@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { PUBLIC_TITLE } from '$env/static/public';
+	import { onMount } from 'svelte';
 
 	export let data;
 

@@ -2,55 +2,56 @@
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { PUBLIC_TITLE } from '$env/static/public';
 	import { onMount } from 'svelte';
 
 	let parameters;
 	let token, type, expire;
 
 	onMount(() => {
-		if (browser) {
-			parameters = new URLSearchParams(window.location.hash.slice(1));
-			[token, type, expire] = [
-				parameters.get('access_token'),
-				parameters.get('token_type'),
-				Number.parseInt(parameters.get('expires_in')?.toString()!)
-			];
+		document.title = PUBLIC_TITLE + ' | Discord';
 
-			fetch('/api/controller/auth', {
-				method: 'POST',
-				body: JSON.stringify({ type, token, expire })
-			})
-				.then((result) => result.json())
-				.then((val) => {
-					let { isErr, errMsg, content, isNew } = val;
+		parameters = new URLSearchParams(window.location.hash.slice(1));
+		[token, type, expire] = [
+			parameters.get('access_token'),
+			parameters.get('token_type'),
+			Number.parseInt(parameters.get('expires_in')?.toString()!)
+		];
 
-					if (isErr) {
+		fetch('/api/controller/auth', {
+			method: 'POST',
+			body: JSON.stringify({ type: type, token: token, expire: expire })
+		})
+			.then(async (result) => result.json())
+			.then((val) => {
+				let { isErr, errMsg, content, isNew } = val;
+
+				if (isErr) {
+					document.getElementById('tooltip-not-member')?.classList.toggle('hidden');
+
+					setTimeout(() => {
 						document.getElementById('tooltip-not-member')?.classList.toggle('hidden');
-
-						setTimeout(() => {
-							document.getElementById('tooltip-not-member')?.classList.toggle('hidden');
-							console.error(errMsg);
-							history.replaceState('', '', '/auth');
-							goto('/');
-							return;
-						}, 10000);
-					} else {
-						fetch('/api/controller/session', { method: 'POST', body: content })
-							.then((res) => res.json())
-							.then((val) => {
-								if (!isNew) {
-									history.replaceState('', '', '/auth');
-									goto('/');
-									return;
-								} else {
-									history.replaceState('', '', '/auth');
-									goto('/auth');
-									return;
-								}
-							});
-					}
-				});
-		}
+						console.error(errMsg);
+						history.replaceState('', '', '/auth');
+						goto('/');
+						return;
+					}, 10000);
+				} else {
+					fetch('/api/controller/session', { method: 'POST', body: content })
+						.then((res) => res.json())
+						.then((val) => {
+							if (!isNew) {
+								history.replaceState('', '', '/auth');
+								goto('/');
+								return;
+							} else {
+								history.replaceState('', '', '/auth');
+								goto('/auth');
+								return;
+							}
+						});
+				}
+			});
 	});
 </script>
 

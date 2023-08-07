@@ -22,11 +22,14 @@
 		page.subscribe((val) => (val.form = null));
 
 		displayData = displayData;
-		loadingState = false;
 
 		setTimeout(() => {
 			scrollToBottom();
 		}, 1000);
+
+		setTimeout(() => {
+			loadingState = false;
+		}, 10000);
 	}
 
 	function setErr() {
@@ -38,7 +41,8 @@
 			}, 5000)
 		);
 
-		page.subscribe((val) => (val.form.isErr = false));
+		loadingState = false;
+		page.subscribe((val) => (val.form != null ? (val.form.isErr = false) : (val.form = null)));
 		return $page.form.message;
 	}
 
@@ -209,6 +213,7 @@
 			<div class="divider col-span-full" />
 			<main class="message-content pb-5 pt-5 max-md:pt-0 col-span-full w-full">
 				{#if displayData != null || displayData != undefined}
+					<!-- {@debug displayData} -->
 					{#each displayData as { content, instance, created_at }, index}
 						{#if instance == 'user'}
 							<div
@@ -273,12 +278,18 @@
 				id="prompt"
 				required
 				rows="1"
+				disabled={loadingState}
 				class="mb-[0.15rem] w-full resize-none overflow-auto dark:dark-scroll max-h-[5rem] bg-transparent outline-none focus:border-transparent focus:border-solid focus:border-2 placeholder:text-slate-400 dark:text-white py-1"
 				placeholder="I know you're up to something"
 				bind:this={textareaRef}
 				bind:value={textareaContent}
 				on:input={adjustTextareaHeight}
 				on:keydown={handleKeyDown}
+			/>
+			<span
+				class="loading loading-spinner loading-lg ml-2 mr-2 text-blue-500 dark:text-emerald-500 transition-all ease-in duration-200 scale-0 {loadingState
+					? 'scale-100'
+					: 'scale-0'}"
 			/>
 			<button
 				class="w-fit group/submit disabled:hidden"

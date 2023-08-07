@@ -1,7 +1,11 @@
 import { getAllTalk, getTalk } from '$lib/server/models/conversations.models.js';
 import { json } from '@sveltejs/kit';
 
-export const GET = async () => {
+export const GET = async ({ locals, url }) => {
+	if (!['localhost', '192.168.0.122'].includes(url.hostname)) return json({ stat: 403, content: null });
+
+	if (locals.user.id == null) return json({ stat: 401, content: null });
+
 	let result = await getAllTalk();
 
 	let tokenData = [
@@ -60,117 +64,6 @@ export const GET = async () => {
 			]
 		}
 	];
-
-	// let tokenData = [
-	// 	{
-	// 		month: 'Jan',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Feb',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'May',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Apr',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Mei',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Jun',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Jul',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Aug',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Sep',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Oct',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Nov',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		month: 'Des',
-	// 		users: [
-	// 			{
-	// 				id: '' || null,
-	// 				token: 0
-	// 			}
-	// 		]
-	// 	}
-	// ];
 
 	tokenData.pop();
 

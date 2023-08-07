@@ -1,4 +1,11 @@
 import { authUser } from '$lib/server/models/auth.models.js';
+import { redirect } from '@sveltejs/kit';
+
+export const load = async ({ locals }) => {
+	if (locals.user.id != null || locals.user.id != undefined) {
+		throw redirect(303, '/');
+	}
+};
 
 export const actions = {
 	signin: async ({ request, fetch, cookies }) => {
@@ -15,9 +22,10 @@ export const actions = {
 			return { signedIn: false, message: errMessage };
 		}
 
-		let content = JSON.stringify(user);
-
-		let response = await fetch('/api/controller/session', { method: 'POST', body: content });
+		let response = await fetch('/api/controller/session', {
+			method: 'POST',
+			body: JSON.stringify(user)
+		});
 		let result = await response.json();
 
 		return { signedIn: true, message: null };
@@ -25,8 +33,6 @@ export const actions = {
 	signout: async ({ request, fetch }) => {
 		let response = await fetch('/api/controller/session/destroy', { method: 'GET' });
 		let jsoned = await response.json();
-
-		console.log(jsoned);
 
 		return { signedOut: true };
 	}

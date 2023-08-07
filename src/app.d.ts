@@ -13,6 +13,8 @@ declare global {
 				email: string | null;
 				avatar: string | null;
 				id: string | null;
+				banner: string | null;
+				banner_color: string | null;
 			};
 		}
 		interface PageData {

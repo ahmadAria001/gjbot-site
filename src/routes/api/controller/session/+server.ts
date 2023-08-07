@@ -1,30 +1,44 @@
 import { encrypt } from '$lib/functions/encoder.js';
-import { createSession } from '$lib/server/models/session.models.js';
+import jwt from 'jsonwebtoken';
 import { json } from '@sveltejs/kit';
+import { JWT_SECRETS_ACCESS } from '$env/static/private';
 
-export const POST = async ({ request, cookies, locals }) => {
+export const POST = async ({ request, cookies, locals, url }) => {
+	if (!['localhost', '192.168.0.122'].includes(url.hostname)) {
+		return json({ stat: 403, message: 'Forbidden' });
+	}
+
 	let body = await request.json();
 
-	let stringBody = JSON.stringify(body);
-	let encryptedBody = encrypt(stringBody);
-
-	let sessionData = await createSession({
-		id: body.id,
-		expire: body.expire,
-		session: encryptedBody
+	let token = jwt.sign(body, JWT_SECRETS_ACCESS, {
+		expiresIn: '1d'
 	});
 
-	let sessionId = sessionData?.session_id;
+	// let sessionId = token;
 
-	cookies.set('session', sessionId!, {
+	cookies.set('AuthorizationToken', `Bearer ${token}`, {
 		secure: false,
-		expires: new Date(body.expire),
+		maxAge: 60 * 60 * 24,
+		path: '/',
+		httpOnly: true,
+		sameSite: 'strict'
+	});
+	cookies.set('_IOF', encrypt('isFromLogin'), {
+		secure: false,
+		maxAge: 60 * 60 * 24,
 		path: '/',
 		httpOnly: true,
 		sameSite: 'strict'
 	});
 
-	locals.user = { avatar: body.avatar, email: body.email, id: body.id, username: body.username };
+	locals.user = {
+		avatar: body.avatar,
+		email: body.email,
+		id: body.id,
+		username: body.username,
+		banner: body.banner,
+		banner_color: body.banner_color
+	};
 
 	return json({ stat: 200, message: 'Completed' });
 };

@@ -8,15 +8,22 @@ interface userData {
 	isNew: boolean | false;
 }
 
-export const POST = async ({ request }) => {
-	let params = await request.json();
-
+export const POST = async ({ request, locals, url }) => {
 	let result: userData = {
 		isErr: false,
 		errMsg: null,
 		content: null,
 		isNew: false
 	};
+
+	if (!['localhost', '192.168.0.122'].includes(url.hostname)) {
+		result.isErr = true;
+		result.errMsg = 'Forbidden';
+
+		return json(result);
+	}
+
+	let params = await request.json();
 
 	let response = await auth(params);
 

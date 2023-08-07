@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { afterNavigate, goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { PUBLIC_DC_SIGNIN_LINK } from '$env/static/public';
+	import { PUBLIC_DC_SIGNIN_LINK, PUBLIC_TITLE } from '$env/static/public';
 	import gjIcon from '$lib/assets/img/Desain_tanpa_judul_(1)-rgm-CYQcv-transformed.png';
 	import postcss from 'postcss';
 	import { onMount } from 'svelte';
@@ -16,8 +17,6 @@
 		}
 	});
 
-	console.log(form);
-
 	onMount(() => {
 		let modal = document.getElementById('modal-log');
 
@@ -31,6 +30,8 @@
 			// @ts-ignore
 			modal?.showModal();
 		}
+
+		if (browser) document.title = PUBLIC_TITLE + ' | Sign In';
 	});
 </script>
 

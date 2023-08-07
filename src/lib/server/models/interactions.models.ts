@@ -30,6 +30,7 @@ export const updateToken = async (resourcecs: configureations) => {
 		if (dataUser != null) {
 			let amountInterac1tion = dataUser.interactions.amount;
 			let amountToken = dataUser.interactions.tokenUsed;
+			let totalToken = dataUser.interactions.totalToken;
 			let amountWord = dataUser.interactions.words;
 			let amountImg = dataUser.interactions.imgaeGenerated;
 
@@ -41,7 +42,8 @@ export const updateToken = async (resourcecs: configureations) => {
 						'interactions.words': amountWord + resourcecs.words,
 						'interactions.tokenUsed': amountToken + resourcecs.token,
 						'interactions.lastInteraction': Math.floor(Date.now() / 1000),
-						'interactions.imgaeGenerated': amountImg + resourcecs.img
+						'interactions.imgaeGenerated': amountImg + resourcecs.img,
+						'interactions.totalToken': totalToken + resourcecs.token
 					}
 				}
 			);
@@ -57,7 +59,8 @@ export const updateToken = async (resourcecs: configureations) => {
 				words: resourcecs.words,
 				tokenUsed: resourcecs.token,
 				lastInteraction: Math.floor(Date.now() / 1000),
-				imgaeGenerated: 0
+				imgaeGenerated: 0,
+				totalToken: resourcecs.token
 			}
 		});
 	} catch (error) {

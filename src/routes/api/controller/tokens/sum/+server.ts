@@ -1,7 +1,11 @@
 import { getTalk } from '$lib/server/models/conversations.models.js';
 import { json } from '@sveltejs/kit';
 
-export const POST = async ({ request }) => {
+export const POST = async ({ request, url, locals }) => {
+	if (!['localhost', '192.168.0.122'].includes(url.hostname)) return json({ stat: 403, content: null });
+
+	if (locals.user.id == null) return json({ stat: 401, content: null });
+
 	let body = await request.json();
 
 	let result = await getTalk(body.id);

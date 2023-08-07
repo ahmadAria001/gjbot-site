@@ -1,4 +1,5 @@
 import { dencrypt, encrypt } from '$lib/functions/encoder';
+import type { ObjectId } from 'mongodb';
 import { client } from '../database/db';
 import { compareHash } from '../functions/hash';
 
@@ -26,7 +27,16 @@ export interface responseData {
 		email: string | null;
 		avatar: string | null;
 		expire: number | null;
+		banner: string | null;
+		banner_color: string | null;
 	};
+}
+
+interface passwordForm {
+	status: number;
+	message: string | null;
+	password: string | null;
+	_id: ObjectId | null;
 }
 
 export const authEmail = async (payload: authEmail): Promise<responseData> => {
@@ -36,7 +46,15 @@ export const authEmail = async (payload: authEmail): Promise<responseData> => {
 		err: false,
 		errMessage: null,
 		isNew: false,
-		user: { avatar: null, email: null, expire: null, id: null, username: null }
+		user: {
+			avatar: null,
+			email: null,
+			expire: null,
+			id: null,
+			username: null,
+			banner: null,
+			banner_color: null
+		}
 	};
 
 	let isErr = false;
@@ -64,7 +82,9 @@ export const authEmail = async (payload: authEmail): Promise<responseData> => {
 						username: null,
 						email: null,
 						avatar: null,
-						expire: 0
+						expire: 0,
+						banner: null,
+						banner_color: null
 					}
 				};
 				break;
@@ -79,7 +99,9 @@ export const authEmail = async (payload: authEmail): Promise<responseData> => {
 					username: user?.accounts.discord.userName,
 					email: user?.accounts.discord.email,
 					avatar: user?.accounts.discord.avatar,
-					expire: Date.now() + 604800 * 1000
+					expire: 60 * 60 * 24,
+					banner: user?.accounts.discord.banner,
+					banner_color: user?.accounts.discord.banner_color
 				}
 			};
 		} catch (error) {
@@ -93,7 +115,9 @@ export const authEmail = async (payload: authEmail): Promise<responseData> => {
 						username: null,
 						email: null,
 						avatar: null,
-						expire: 0
+						expire: 0,
+						banner: null,
+						banner_color: null
 					}
 				};
 				break;
@@ -118,7 +142,9 @@ export const authEmail = async (payload: authEmail): Promise<responseData> => {
 						username: null,
 						email: null,
 						avatar: null,
-						expire: 0
+						expire: 0,
+						banner: null,
+						banner_color: null
 					}
 				};
 				break;
@@ -135,7 +161,15 @@ export const authUser = async (payload: authUser): Promise<responseData> => {
 		err: false,
 		errMessage: null,
 		isNew: false,
-		user: { avatar: null, email: null, expire: null, id: null, username: null }
+		user: {
+			avatar: null,
+			email: null,
+			expire: null,
+			id: null,
+			username: null,
+			banner: null,
+			banner_color: null
+		}
 	};
 
 	const con = client;
@@ -161,7 +195,9 @@ export const authUser = async (payload: authUser): Promise<responseData> => {
 						username: user?.accounts.discord.userName,
 						email: user?.accounts.discord.email,
 						avatar: user?.accounts.discord.avatar,
-						expire: Date.now() + 604800 * 1000
+						expire: 60 * 60 * 24,
+						banner: user?.accounts.discord.banner,
+						banner_color: user?.accounts.discord.banner_color
 					}
 				};
 			} else {
@@ -174,7 +210,9 @@ export const authUser = async (payload: authUser): Promise<responseData> => {
 						username: null,
 						email: null,
 						avatar: null,
-						expire: 0
+						expire: 0,
+						banner: null,
+						banner_color: null
 					}
 				};
 			}
@@ -189,7 +227,9 @@ export const authUser = async (payload: authUser): Promise<responseData> => {
 						username: null,
 						email: null,
 						avatar: null,
-						expire: 0
+						expire: 0,
+						banner: null,
+						banner_color: null
 					}
 				};
 				break;
@@ -214,7 +254,9 @@ export const authUser = async (payload: authUser): Promise<responseData> => {
 						username: null,
 						email: null,
 						avatar: null,
-						expire: 0
+						expire: 0,
+						banner: null,
+						banner_color: null
 					}
 				};
 				break;
@@ -231,7 +273,15 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 		err: false,
 		errMessage: null,
 		isNew: false,
-		user: { avatar: null, email: null, expire: null, id: null, username: null }
+		user: {
+			avatar: null,
+			email: null,
+			expire: null,
+			id: null,
+			username: null,
+			banner: null,
+			banner_color: null
+		}
 	};
 
 	if (type == null && token == null && expire == null) {
@@ -265,7 +315,9 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 			let isInGuild: any[] = await guilds.json();
 			rsp = await resp.json();
 
-			isErr = !isInGuild.some((val) => val.id == '1014138032686899262');
+			isErr = !isInGuild.some(
+				(val) => val.id == '1014138032686899262' || val.id == '1021996824887824384'
+			);
 			if (isErr) errMsg = 'Not Part of The Guild';
 
 			break;
@@ -299,7 +351,7 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 		return result;
 	}
 
-	let { id, username, global_name, avatar, email } = rsp;
+	let { id, username, global_name, avatar, email, banner, banner_color } = rsp;
 
 	for (let i = 0; i < 5; i++) {
 		try {
@@ -307,6 +359,37 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 			let user = await collections.findOne({ 'accounts.discord.userId': id });
 
 			if (user != null) {
+				if (avatar != user?.accounts.discord.avatar) {
+					await collections.updateOne(
+						{ 'accounts.discord.userId': id },
+						{
+							$set: {
+								'accounts.discord.avatar': avatar
+							}
+						}
+					);
+				}
+				if (avatar != user?.accounts.discord.banner) {
+					await collections.updateOne(
+						{ 'accounts.discord.userId': id },
+						{
+							$set: {
+								'accounts.discord.banner': banner
+							}
+						}
+					);
+				}
+				if (avatar != user?.accounts.discord.banner_color) {
+					await collections.updateOne(
+						{ 'accounts.discord.userId': id },
+						{
+							$set: {
+								'accounts.discord.banner_color': banner_color
+							}
+						}
+					);
+				}
+
 				if (
 					user?.accounts.discord.tokens.expiredate > Date.now() &&
 					dencrypt(user?.accounts.discord.tokens.token) != token
@@ -332,7 +415,9 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 							username: user?.accounts.discord.userName,
 							email: user?.accounts.discord.email,
 							avatar: user?.accounts.discord.avatar,
-							expire: Date.now() + expire! * 1000
+							expire: Date.now() + expire! * 1000,
+							banner: user?.accounts.discord.banner,
+							banner_color: user?.accounts.discord.banner_color
 						}
 					};
 				} else {
@@ -345,7 +430,9 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 							username: user?.accounts.discord.userName,
 							email: user?.accounts.discord.email,
 							avatar: user?.accounts.discord.avatar,
-							expire: Date.now() + expire! * 1000
+							expire: Date.now() + expire! * 1000,
+							banner: user?.accounts.discord.banner,
+							banner_color: user?.accounts.discord.banner_color
 						}
 					};
 				}
@@ -360,6 +447,8 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 							avatar: avatar,
 							globalName: global_name,
 							create_at: Date.now(),
+							banner: banner,
+							banner_color: banner_color,
 							tokens: {
 								token: encrypt(token!),
 								expiredate: Date.now() + expire! * 1000,
@@ -380,12 +469,12 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 						username: rsp.username,
 						email: rsp.email,
 						avatar: rsp.avatar,
-						expire: Date.now() + expire! * 1000
+						expire: Date.now() + expire! * 1000,
+						banner: banner,
+						banner_color: banner_color
 					}
 				};
 			}
-
-			console.log(result);
 
 			break;
 		} catch (error) {
@@ -407,6 +496,83 @@ export const auth = async (payload: authParams): Promise<responseData> => {
 			if (!new String((error as any).code || null).includes('ECONN')) {
 				isErr = true;
 				errMsg = (error as any).message;
+				break;
+			}
+		}
+	}
+
+	return result;
+};
+
+export const verifPassword = async (email: string, id: string, password: string) => {
+	const con = client;
+	await con.connect();
+
+	const errMes = 'Current password are incorrect';
+	let result: passwordForm = {
+		status: 200,
+		message: errMes || null,
+		password: password || null,
+		_id: null
+	};
+
+	for (let i = 0; i < 5; i++) {
+		try {
+			let collections = con.db('discordBot').collection('website');
+			let user = await collections.findOne(
+				{
+					'accounts.discord.email': email,
+					'accounts.discord.userId': id
+				},
+				{
+					projection: {
+						_id: 1,
+						password: 1
+					}
+				}
+			);
+
+			const isCorrect = compareHash(password!, user?.password);
+
+			if (user != null && isCorrect) {
+				result.message = null!;
+				result._id = user._id;
+				break;
+			}
+
+			if (user == undefined || user == null || !isCorrect) {
+				result.status = 400;
+				result.password = null;
+				result.message = errMes;
+				break;
+			}
+		} catch (error) {
+			if (i == 5) {
+				result = {
+					status: 400,
+					message: (error as any).message,
+					password: null,
+					_id: null!
+				};
+				break;
+			}
+
+			if (new String((error as any).code || null).includes('ECONN')) {
+				console.error(error);
+				setTimeout(() => {
+					console.error('Timed Out by Error');
+				}, 5000);
+
+				continue;
+			}
+
+			if (!new String((error as any).code || null).includes('ECONN')) {
+				result = {
+					status: 400,
+					message: (error as any).message,
+					password: null,
+					_id: null!
+				};
 				break;
 			}
 		}

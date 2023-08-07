@@ -1,4 +1,9 @@
+import { calcToken } from '$lib/server/functions/tokens.js';
+import { redirect } from '@sveltejs/kit';
+
 export const load = async ({ fetch, locals }) => {
+	if (locals.user.id == null) throw redirect(303, '/signin');
+
 	let responseSelfTalk;
 	let resultSelfTalk;
 
@@ -17,9 +22,15 @@ export const load = async ({ fetch, locals }) => {
 };
 
 export const actions = {
-	submitpromp: async ({ request, fetch }) => {
+	submitpromp: async ({ request, fetch, locals }) => {
 		const data = await request.formData();
 		const prompt = data.get('prompt')?.toString();
+
+		let inputToken = await calcToken(locals.user.id, prompt!);
+
+		if (inputToken.content != null) {
+			return { promptData: null, isErr: true, message: 'Input text too long' };
+		}
 
 		const response = await fetch('/api/controller/conversations/completions', {
 			method: 'POST',
