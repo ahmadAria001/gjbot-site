@@ -1,5 +1,5 @@
 import { authEmail } from '$lib/server/models/auth.models.js';
-import { changePassword } from '$lib/server/models/user.models.js';
+import { changePassword, getUser } from '$lib/server/models/user.models.js';
 import { redirect } from '@sveltejs/kit';
 
 export const load = async ({ cookies, locals }) => {
@@ -31,16 +31,25 @@ export const actions = {
 			throw redirect(302, '/signin');
 		}
 
+		let responseUser = await getUser(locals.user.id!, locals.user.email!);
+		if (responseUser.status === 400) {
+			return {
+				status: responseUser.status,
+				message: responseUser.message
+			};
+		}
+
+		let user = responseUser.content;
+
 		let isChanged = await changePassword({
-			email: locals.user.email!,
-			id: locals.user.id!,
+			id: user._id!,
 			password: password!
 		});
 
-		if (isChanged.user.id != null) {
+		if (isChanged.status != 400) {
 			throw redirect(302, '/');
 		}
 
-		return isChanged.isNew != false ? { updated: true } : { updated: false };
+		return isChanged.status == 400 ? { updated: true } : { updated: false };
 	}
 };
