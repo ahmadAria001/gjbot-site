@@ -255,6 +255,9 @@ export const formatCode = (
 	return { content: null, instance: null, created_at: null };
 };
 
-function replaceCharacter(string: string, index: number, replacement: string) {
+export function replaceCharacter(string: string, index: number, replacement: string) {
 	return string.slice(0, index) + replacement + string.slice(index + 1);
+}
+export function addCharacter(string: string, index: number, replacement: string) {
+	return string.slice(0, index) + replacement + string.slice(replacement.length - 1);
 }

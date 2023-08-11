@@ -22,8 +22,6 @@
 	$: passwordInput, passwordConfirm;
 	$: form;
 
-	console.log(form);
-
 	onMount(() => {
 		if (form?.status == 200) {
 			history.replaceState('', '', '/me');
@@ -86,7 +84,7 @@
 	if (browser) document.title = PUBLIC_TITLE + ' | Sign In';
 </script>
 
-<div class="container-alert absolute top-20 right-0 xl:right-4 xl:top-24 z-[50]">
+<div class="container-alert absolute max-md:static top-20 right-0 xl:right-4 xl:top-24 z-[50]">
 	<div
 		class="alert alert-success py-1 rounded-lg dark:text-white dark:bg-emerald-600 mb-2 hidden"
 		id="tooltip-current-pw-sc"
@@ -99,7 +97,7 @@
 				d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"
 			/><path d="M9.999 13.587 7.7 11.292l-1.412 1.416 3.713 3.705 6.706-6.706-1.414-1.414z" /></svg
 		>
-		<span>Password has been changed</span>
+		<span class="max-md:text-[0.78rem]">Password has been changed</span>
 	</div>
 	<div
 		class="alert alert-error py-1 rounded-lg dark:text-white dark:bg-rose-600 mb-2 hidden"
@@ -107,7 +105,7 @@
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			class="stroke-current shrink-0 h-6 w-6"
+			class="stroke-current shrink-0 h-6 w-6 max-md:w-4"
 			fill="none"
 			viewBox="0 0 24 24"
 			><path
@@ -117,7 +115,7 @@
 				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 			/></svg
 		>
-		<span>Current password is incorrect</span>
+		<span class="max-md:text-[0.78rem]">Current password is incorrect</span>
 	</div>
 	<div
 		class="alert alert-error flex py-1 rounded-lg dark:text-white dark:bg-rose-600"
@@ -125,7 +123,7 @@
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			class="stroke-current shrink-0 h-6 w-6"
+			class="stroke-current shrink-0 h-6 w-6 max-md:w-4"
 			fill="none"
 			viewBox="0 0 24 24"
 			><path
@@ -135,7 +133,7 @@
 				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 			/></svg
 		>
-		<span>Password must be more than 10 Character</span>
+		<span class="max-md:text-[0.78rem]">Password must be more than 10 Character</span>
 	</div>
 	<div
 		class="alert alert-error mt-2 flex py-1 rounded-lg dark:text-white dark:bg-rose-600"
@@ -143,7 +141,7 @@
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			class="stroke-current shrink-0 h-6 w-6"
+			class="stroke-current shrink-0 h-6 w-6 max-md:w-4"
 			fill="none"
 			viewBox="0 0 24 24"
 			><path
@@ -153,7 +151,7 @@
 				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 			/></svg
 		>
-		<span>Password must contains symbols</span>
+		<span class="max-md:text-[0.78rem]">Password must contains symbols</span>
 	</div>
 	<div
 		class="alert alert-error flex mt-2 py-1 rounded-lg dark:text-white dark:bg-rose-600"
@@ -161,7 +159,7 @@
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			class="stroke-current shrink-0 h-6 w-6"
+			class="stroke-current shrink-0 h-6 w-6 max-md:w-4"
 			fill="none"
 			viewBox="0 0 24 24"
 			><path
@@ -171,7 +169,7 @@
 				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 			/></svg
 		>
-		<span>Password cannot contains space</span>
+		<span class="max-md:text-[0.78rem]">Password cannot contains space</span>
 	</div>
 	<div
 		class="alert alert-error mt-2 flex py-1 rounded-lg dark:text-white dark:bg-rose-600"
@@ -179,7 +177,7 @@
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			class="stroke-current shrink-0 h-6 w-6"
+			class="stroke-current shrink-0 w-6 max-md:w-4"
 			fill="none"
 			viewBox="0 0 24 24"
 			><path
@@ -189,7 +187,7 @@
 				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 			/></svg
 		>
-		<span>Password is not Match</span>
+		<span class="max-md:text-[0.78rem]">Password is not Match</span>
 	</div>
 </div>
 <div class="w-full p-2 flex justify-center align-middle">
@@ -351,9 +349,9 @@
 				<div class="col-span-full flex justify-end">
 					<button
 						class="mt-5 mb-2 text-white w-fit max-md:w-full px-10 transition-all duration-150
-                         bg-blue-600 hover:bg-blue-500 dark:hover:bg-emerald-500 dark:hover:text-white
+                         bg-blue-600 hover:bg-blue-500 dark:hover:bg-emerald-600 dark:hover:text-white
                          dark:bg-transparent dark:border-solid dark:border-2 dark:text-emerald-400
-                          dark:border-emerald-400 dark:hover:shadow-emerald-400 dark:shadow-lg
+                          dark:border-emerald-400 dark:hover:shadow-emerald-500 dark:hover:border-emerald-500 dark:shadow-lg
                            dark:drop-shadow-md h-10 rounded-xl font-[Roboto] font-extrabold
                            disabled:bg-transparent disabled:hover:bg-transparent disabled:text-emerald-800 disabled:hover:text-gray-600"
 						id="submit"

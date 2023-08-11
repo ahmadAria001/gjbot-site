@@ -10,7 +10,6 @@ export const actions = {
 
 		const response = await verifPassword(locals.user.email!, locals.user.id!, current!);
 
-		console.log(response);
 		if (response.status == 400) {
 			return { status: 400, message: response.message };
 		}

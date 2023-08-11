@@ -1,12 +1,29 @@
 import { JWT_SECRETS_ACCESS } from '$env/static/private';
 import { dencrypt, tryParse } from '$lib/functions/encoder';
 
+import jwt from 'jsonwebtoken';
+
 import { authEmail } from '$lib/server/models/auth.models';
 import { redirect, type Handle, type Cookies } from '@sveltejs/kit';
-import jwt from 'jsonwebtoken';
+import { initRoutes } from '$lib/server/models/pages.models';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const AuthorizationToken = event.cookies.get('AuthorizationToken') || '';
+
+	const modules = import.meta.glob(
+		[
+			'./routes/*/+page.svelte',
+			'./routes/*/*/+page.svelte',
+			'./routes/*/*/*/+page.svelte',
+			'./routes/*/*/*/*/+page.svelte',
+			'./routes/+page.svelte'
+		],
+		{
+			eager: true
+		}
+	);
+
+	await initRoutes(modules);
 
 	if (event.locals.isInit == undefined) event.locals.isInit = false;
 
