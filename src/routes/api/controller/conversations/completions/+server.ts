@@ -20,8 +20,10 @@ export const POST = async ({ request, locals, url }) => {
 
 	let prompContainer: { role: 'user' | 'system'; content: string }[] = [];
 
-	for (let i = lastChats.value.length - 1; i >= 0; i--) {
-		prompContainer.push({ role: lastChats.value[i].sender, content: lastChats.value[i].content });
+	if (lastChats.value != null) {
+		for (let i = lastChats.value.length - 1; i >= 0; i--) {
+			prompContainer.push({ role: lastChats.value[i].sender, content: lastChats.value[i].content });
+		}
 	}
 
 	prompContainer.push({ content: prompt, role: 'user' });
