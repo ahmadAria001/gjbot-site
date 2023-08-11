@@ -50,6 +50,6 @@ export const actions = {
 			throw redirect(302, '/');
 		}
 
-		return isChanged.status == 400 ? { updated: true } : { updated: false };
+		return isChanged.status == 400 ? { updated: false } : { updated: true };
 	}
 };
