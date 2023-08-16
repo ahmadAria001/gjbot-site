@@ -40,5 +40,4 @@ export const POST = async ({ request, locals, url }) => {
 		isErr: false,
 		message: null
 	});
-	// return json({ promptData: null, isErr: false, message: null });
 };

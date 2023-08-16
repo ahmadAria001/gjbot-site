@@ -6,13 +6,15 @@ export const load = async ({ locals }) => {
 	if (locals.user.id == null) throw redirect(303, '/signin');
 
 	const cdnLink = 'https://cdn.discordapp.com';
-	let bannerUrl = '';
+	let bannerUrl: string | null = null;
 	if (locals.user.banner != null)
 		bannerUrl = `${cdnLink}/banners/${locals.user.id}/${locals.user.banner}.gif?size=4096`;
 
 	let profilePict = `${cdnLink}/avatars/${locals.user.id}/${locals.user.avatar}.png?size=4096`;
 
-	let roles = (await getRoles(locals.user.id)).content;
+	let rolesResponse = await getRoles(locals.user.id);
+	let roles = rolesResponse.content;
+
 	let parsedRole: any[] = [];
 	roles.map((val: any) =>
 		parsedRole.push({
@@ -21,6 +23,7 @@ export const load = async ({ locals }) => {
 			path: val.path,
 			viewBox: val.viewbox,
 			xmlns: val.xmlns,
+			style: val.style,
 			_id: new ObjectId(val._id!).toString()
 		})
 	);

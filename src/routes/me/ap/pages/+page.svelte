@@ -4,6 +4,8 @@
 	import { PUBLIC_TITLE } from '$env/static/public';
 	import { onMount } from 'svelte';
 
+	export let data;
+
 	onMount(() => {
 		if (browser) document.title = PUBLIC_TITLE + ' | Pages';
 	});
@@ -31,48 +33,34 @@
 				<div
 					class="max-h-[30rem] max-md:max-h-[33rem] dark:dark-scroll p-5 grid grid-flow-row grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 max-xl:grid-cols-3 gap-5 overflow-auto"
 				>
-					<!-- {#each data.parsedRole as { name, cls, path, viewBox, xmlns, style, _id }, idx} -->
-					<button
-						class="col-span-1 px-5 p-2 w-full h-fit bg-base-200 shadow-lg drop-shadow-lg dark:shadow-none shadow-slate-500 rounded-md"
-					>
-						<!-- id={_id} -->
-						<h2 class="card-title h-full flex align-middle">
-							<!-- ${name} -->
-							home
-						</h2>
-						<h2 class="card-title h-full flex align-middle">
-							<!-- ${name} -->
-							Path: /
-						</h2>
-						<div class="divider mr-2" />
-						<div class="text-lg text-start">Permissions:</div>
-
-						<div class="text-start w-full">
-							<p class="w-full">access: [ ]</p>
-
-							<p class="w-full">write: [ ]</p>
-
-							<p class="w-full">update: [ ]</p>
-
-							<p class="w-full">delete: [ ]</p>
-						</div>
+					{#each data.pageData as { _id, title, path, accessPermissions, updatePermissions, deletePermissions, userPermissions, rolePermissions, disabledUserPermissions, disabledRolePermissions }, idx}
 						<button
-							class="mt-2 w-full rounded-md right-2 p-2 flex justify-center align-middle z-10 transition-all duration-150 ease-in bg-yellow-500 dark:bg-yellow-600 px-1 py-1 pt-2 max-md:pt-2"
-							on:click={() => {}}
+							class="col-span-1 px-5 p-2 w-full h-fit bg-base-200 shadow-lg drop-shadow-lg dark:shadow-none shadow-slate-500 rounded-md"
+							id={_id}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								class="max-md:w-7 w-8 fill-white"
-								><path
-									d="m7 17.013 4.413-.015 9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583v4.43zM18.045 4.458l1.589 1.583-1.597 1.582-1.586-1.585 1.594-1.58zM9 13.417l6.03-5.973 1.586 1.586-6.029 5.971L9 15.006v-1.589z"
-								/><path
-									d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2z"
-								/></svg
+							<h2 class="card-title h-full flex align-middle">
+								{title}
+							</h2>
+							<h2 class="card-title h-full flex align-middle">
+								Path: {path}
+							</h2>
+							<a
+								href="/me/ap/pages/{_id}"
+								class="mt-2 w-full rounded-md right-2 p-2 flex justify-center align-middle z-10 transition-all duration-150 ease-in bg-yellow-500 dark:bg-yellow-600 px-1 py-1 pt-2 max-md:pt-2"
 							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									class="max-md:w-7 w-8 fill-white"
+									><path
+										d="m7 17.013 4.413-.015 9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583v4.43zM18.045 4.458l1.589 1.583-1.597 1.582-1.586-1.585 1.594-1.58zM9 13.417l6.03-5.973 1.586 1.586-6.029 5.971L9 15.006v-1.589z"
+									/><path
+										d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2z"
+									/></svg
+								>
+							</a>
 						</button>
-					</button>
-					<!-- {/each} -->
+					{/each}
 				</div>
 			</div>
 		</div>

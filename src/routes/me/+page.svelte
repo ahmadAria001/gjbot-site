@@ -29,7 +29,8 @@
 								/>
 							{:else}
 								<div
-									class="banner w-full h-40 max-md:h-20 bg-[{data.bannerColor.toString()}] dark:bg-[{data.bannerColor.toString()}] rounded-t-lg"
+									class="banner w-full h-40 max-md:h-20 rounded-t-lg"
+									style="background-color: {data.bannerColor};"
 								/>
 							{/if}
 						{:else}
@@ -57,11 +58,11 @@
 								class="w-4/6 max-md:w-full text-right h-fit flex justify-end max-md:justify-center max-md:mt-2 px-1 pt-0 relative"
 							>
 								<div
-									class="flex justify-end right-2 max-xl:grid max-xl:grid-cols-8 gap-1 w-fit rounded-md bg-[#e0e0e0] dark:bg-slate-700 px-1 py-1"
+									class="flex justify-end right-2 max-xl:grid max-xl:grid-cols-8 gap-1 w-fit rounded-md bg-[#8f8f8f] dark:bg-slate-700 px-1 py-1"
 								>
-									{#each data.roles as { name, cls, path, viewBox, xmlns, _id }, idx}
+									{#each data.roles as { name, cls, path, viewBox, xmlns, style, _id }, idx}
 										{@html `<div class="group/js relative overflow-visible flex" id="${_id}">
-											<svg xmlns="${xmlns}" class="${cls}" viewBox="${viewBox}">
+											<svg xmlns="${xmlns}" class="${cls}" viewBox="${viewBox}" style="${style}">
 												${path}
 											</svg>
 											<span class="tooltip-budges group-hover/js:scale-y-100 text-white">${name}</span>

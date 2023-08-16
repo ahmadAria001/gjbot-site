@@ -132,6 +132,105 @@ export const getUserID = async (id: ObjectId) => {
 		try {
 			let collections = con.db('discordBot').collection('website');
 			let user = await collections.findOne({
+				_id: { $nin: [id] }
+			});
+
+			if (user == null) {
+				result.status = 400;
+				break;
+			}
+
+			result.content = user;
+			result.message = null;
+			break;
+		} catch (error) {
+			if (i == 5) {
+				result.status = 400;
+				result.message = (error as any).message;
+				break;
+			}
+
+			if (new String((error as any).code || null).includes('ECONN')) {
+				console.error(error);
+				setTimeout(() => {
+					console.error('Timed Out by Error');
+				}, 5000);
+
+				continue;
+			}
+
+			if (!new String((error as any).code || null).includes('ECONN')) {
+				result.status = 400;
+				result.message = (error as any).message;
+				break;
+			}
+		}
+	}
+
+	return result;
+};
+export const findUserExc = async (id: ObjectId) => {
+	const errMes = 'Cannot find account';
+	let result: userResponse = { status: 200, message: errMes || null, content: '' };
+
+	const con = client;
+	await con.connect();
+
+	for (let i = 0; i < 5; i++) {
+		try {
+			let collections = con.db('discordBot').collection('website');
+			let user = await collections
+				.find({
+					_id: { $nin: [id] },
+					'accounts.discord.userName': { $nin: [null] }
+				})
+				.toArray();
+
+			if (user == null) {
+				result.status = 400;
+				break;
+			}
+
+			result.content = user;
+			result.message = null;
+			break;
+		} catch (error) {
+			if (i == 5) {
+				result.status = 400;
+				result.message = (error as any).message;
+				break;
+			}
+
+			if (new String((error as any).code || null).includes('ECONN')) {
+				console.error(error);
+				setTimeout(() => {
+					console.error('Timed Out by Error');
+				}, 5000);
+
+				continue;
+			}
+
+			if (!new String((error as any).code || null).includes('ECONN')) {
+				result.status = 400;
+				result.message = (error as any).message;
+				break;
+			}
+		}
+	}
+
+	return result;
+};
+export const getUsers = async (id: ObjectId) => {
+	const errMes = 'Cannot find account';
+	let result: userResponse = { status: 200, message: errMes || null, content: '' };
+
+	const con = client;
+	await con.connect();
+
+	for (let i = 0; i < 5; i++) {
+		try {
+			let collections = con.db('discordBot').collection('website');
+			let user = await collections.findOne({
 				_id: id
 			});
 

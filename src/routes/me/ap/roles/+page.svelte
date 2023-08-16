@@ -10,12 +10,30 @@
 
 	$: form;
 
+	const createPermsEl = (val: any) => {
+		let permEl: any[] = [];
+		if (val != null) {
+			val.forEach((element: any) => {
+				permEl.push(` <span id="${element.id}" hidden/> `);
+			});
+		}
+
+		return permEl;
+	};
+
 	const roleClick = (el: MouseEvent) => {
+		cleanInputRole();
+
 		const button = <HTMLElement>el.currentTarget;
 
 		let nm: HTMLInputElement[] = [];
 		document.querySelectorAll('#name').forEach((element) => {
 			nm.push(element as HTMLInputElement);
+		});
+
+		let permissionContent: HTMLInputElement[] = [];
+		button.querySelectorAll(`span`).forEach((element) => {
+			permissionContent.push(element as HTMLInputElement);
 		});
 
 		// const nm = <HTMLInputElement>document.getElementById('name');
@@ -42,6 +60,10 @@
 		let styles: HTMLInputElement[] = [];
 		document.querySelectorAll('#style').forEach((element) => {
 			styles.push(element as HTMLInputElement);
+		});
+
+		permissionContent.map((val: HTMLElement) => {
+			createInputPerms(val.getAttribute('id')?.toString()!);
 		});
 
 		nm.map((val) => {
@@ -80,6 +102,10 @@
 		document.querySelectorAll('#xmlns').forEach((element) => {
 			xmls.push(element as HTMLInputElement);
 		});
+		let selectPerm: HTMLSelectElement[] = [];
+		document.querySelectorAll('#selectPerms').forEach((element) => {
+			selectPerm.push(element as HTMLSelectElement);
+		});
 		let clsx: HTMLInputElement[] = [];
 		document.querySelectorAll('#class').forEach((element) => {
 			clsx.push(element as HTMLInputElement);
@@ -100,9 +126,14 @@
 		document.querySelectorAll('#style').forEach((element) => {
 			styles.push(element as HTMLInputElement);
 		});
+		let permsContainer = <HTMLElement>document.getElementById('permissionsContainer');
+		permsContainer.replaceChildren();
 
 		nm.map((val) => {
 			val.value = '';
+		});
+		selectPerm.map((val) => {
+			val.getElementsByTagName('option')[0].selected = true;
 		});
 		xmls.map((val) => {
 			val.value = '';
@@ -143,6 +174,57 @@
 		}
 	};
 
+	const createInputPerms = (_id: string) => {
+		let selectionPerms = <HTMLSelectElement>document.getElementById('selectPerms');
+		if (selectionPerms.getElementsByTagName('option')[0].selected == true && _id == '') return;
+
+		let permsContainer = <HTMLElement>document.getElementById('permissionsContainer');
+		let inputPerm = document.createElement('input');
+		let inputHiddenPerm = document.createElement('input');
+
+		inputPerm.setAttribute('id', _id);
+		inputPerm.value =
+			data.permissions[data.permissions.findIndex((val: any) => val._id == _id)].name!;
+		inputPerm.setAttribute('value', _id);
+		inputPerm.setAttribute('disabled', 'true');
+		inputPerm.setAttribute('name', 'permDisplay');
+		inputPerm.setAttribute(
+			'class',
+			'bg-blue-600 dark:bg-emerald-700 text-white rounded-lg px-2 max-w-fit w-[5rem] text-center cursor-pointer'
+		);
+
+		inputHiddenPerm.setAttribute('id', _id);
+		inputHiddenPerm.setAttribute('value', _id);
+		inputHiddenPerm.setAttribute('readonly', 'true');
+		inputHiddenPerm.setAttribute('hidden', 'true');
+		inputHiddenPerm.setAttribute('name', 'permissions');
+		inputHiddenPerm.setAttribute(
+			'class',
+			'bg-blue-600 dark:bg-emerald-700 text-white rounded-lg px-2 max-w-fit w-[5rem] text-center cursor-pointer'
+		);
+
+		permsContainer.append(inputPerm);
+		permsContainer.append(inputHiddenPerm);
+
+		permsContainer.addEventListener('click', (evt) => {
+			let permTarget = <HTMLInputElement>evt.target;
+
+			permsRemover(permTarget.getAttribute('id')?.toString()!);
+
+			// if (permTarget.type != undefined) {
+			// 	const targeet = document
+			// 		.querySelectorAll(`[id='${permTarget.getAttribute('id')?.toString()}']`)
+			// 		.forEach((val) => val.remove());
+
+			// 	// console.log(targeet);
+			// }
+		});
+	};
+
+	const permsRemover = (id: string) => {
+		document.querySelectorAll(`[id='${id}']`).forEach((val) => val.remove());
+	};
+
 	let name: HTMLInputElement;
 	let xmlns: HTMLInputElement;
 	let cls: HTMLInputElement;
@@ -150,6 +232,8 @@
 	let path: HTMLInputElement;
 	let _id: HTMLInputElement;
 	let style: HTMLInputElement;
+
+	let selectedPermsVal: any;
 
 	onMount(async () => {
 		if (data != undefined) {
@@ -255,7 +339,7 @@
 					<div
 						class="max-h-[30rem] max-md:h-[15rem] dark:dark-scroll p-5 grid grid-flow-row grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 max-xl:grid-cols-3 gap-5 overflow-auto"
 					>
-						{#each data.parsedRole as { name, cls, path, viewBox, xmlns, style, _id }, idx}
+						{#each data.parsedRole as { name, cls, path, viewBox, xmlns, style, permissions, _id }, idx}
 							{@html `<button
 								class="col-span-1 flex w-full pr-2 bg-base-200 shadow-lg drop-shadow-lg dark:shadow-none shadow-slate-500 rounded-md"
 								id="${_id}"
@@ -264,6 +348,7 @@
 									${path}
 								</svg>
 								<h2 class="card-title h-full flex align-middle">${name}</h2>
+								${createPermsEl(permissions)}
 							</button>`}
 						{/each}
 					</div>
@@ -416,9 +501,51 @@
 									id="style"
 									placeholder="Style"
 									bind:this={style}
-									class="pr-2 font-[Quicksand] text-black dark:text-white w-full h-9 pl-11 ml-0 input input-bordered rounded-md border-solid border-2 dark:bg-transparent dark:border-emerald-500"
+									class="pr-2 font-[Quicksand] text-black dark:text-white w-full
+									h-9 pl-11 ml-0 input input-bordered rounded-md border-solid border-2
+									dark:bg-transparent dark:border-emerald-500"
 								/>
 							</label>
+						</div>
+						<div class="col-span-1 relative max-md:col-span-full">
+							<span class="text-left font-[Quicksand] font-bold">Assign Permission</span>
+							<label
+								class="relative flex w-full max-md:w-full max-lg:w-full max-xl:w-full row-span-2 gap-0"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									class="absolute left-2 top-0 w-9 pt-[0.4rem] pr-2 text-left p-1 fill-slate-400"
+									><path
+										d="M8.293 6.293 2.586 12l5.707 5.707 1.414-1.414L5.414 12l4.293-4.293zm7.414 11.414L21.414 12l-5.707-5.707-1.414 1.414L18.586 12l-4.293 4.293z"
+									/></svg
+								>
+								<select
+									class="pr-2 font-[Quicksand] text-black dark:text-white w-full
+									h-9 pl-11 ml-0 input input-bordered rounded-md border-solid border-2
+									dark:bg-[#1e293b] dark:border-emerald-500 dark:placeholder-emerald-600"
+									bind:value={selectedPermsVal}
+									on:change={() => {
+										createInputPerms(selectedPermsVal);
+									}}
+									id="selectPerms"
+								>
+									<option selected>Select Permission</option>
+									{#each data.permissions as { _id, name, code, created_by, created_at, updated_by, updated_at }, idx}
+										<option value={_id}>{name}</option>
+									{/each}
+								</select>
+							</label>
+						</div>
+						<div class="col-span-1 relative max-md:col-span-full">
+							<span class="text-left font-[Quicksand] font-bold">Assign Permission</span>
+
+							<div
+								class="font-[Quicksand] text-black dark:text-white w-full
+								h-9 px-3 ml-0 input input-bordered rounded-md border-solid border-2
+								dark:bg-[#1e293b] dark:border-emerald-500 dark:placeholder-emerald-600 flex align-middle py-1 gap-1 overflow-auto"
+								id="permissionsContainer"
+							/>
 						</div>
 						<div class="col-span-full relative">
 							<span class="text-left font-[Quicksand] font-bold">ID</span>
@@ -440,7 +567,10 @@
 									placeholder="ID"
 									readonly
 									bind:this={_id}
-									class="pr-2 font-[Quicksand] read-only:border-gray-300 dark:read-only:border-emerald-900 read-only:text-gray-500 dark:read-only:text-gray-400 text-black dark:text-white w-full h-9 pl-11 ml-0 input input-bordered rounded-md border-solid border-2 dark:bg-transparent dark:border-emerald-500"
+									class="pr-2 font-[Quicksand] read-only:border-gray-300 dark:read-only:border-emerald-900
+									 read-only:text-gray-500 dark:read-only:text-gray-400 text-black dark:text-white
+									 w-full h-9 pl-11 ml-0 input input-bordered rounded-md border-solid border-2 dark:bg-transparent
+									dark:border-emerald-500"
 								/>
 							</label>
 						</div>
